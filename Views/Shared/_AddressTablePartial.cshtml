@@ -1,0 +1,42 @@
+﻿@using AddressBook.Models
+@model IEnumerable<AddressModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Country</th>
+            <th>Zip</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var address in Model)
+        {
+            <tr>
+                <td>@address.City</td>
+                <td>@address.Country</td>
+                <td>@address.Zip</td>
+                <td>@address.CreatedAt</td>
+                <td>
+                    @if (address.UpdatedAt != null)
+                    {
+                        @address.UpdatedAt
+                    }
+                    else
+                    {
+                        <span class="text-muted">Never updated</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@address.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@address.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@address.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

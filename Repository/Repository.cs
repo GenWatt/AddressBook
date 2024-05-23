@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddressBook.Repository;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
+public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IBaseEntity
 {
     protected readonly ApplicationDbContext _context;
 

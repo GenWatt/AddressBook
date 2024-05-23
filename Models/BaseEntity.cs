@@ -1,6 +1,6 @@
 ﻿namespace AddressBook.Models;
 
-public class BaseEntity
+public interface IBaseEntity
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }

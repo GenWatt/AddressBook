@@ -1,19 +1,22 @@
-﻿@model AddressBook.Models.AddressModel
+﻿@using AddressBook.DataTransferModels
+@model AddressDTM
 
-<h4>AddressDTM</h4>
+@{
+    ViewData["Title"] = "Add Address";
+
+}
+
+<h4>Address</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="AddAddress" method="post">
-            <partial name="_AddressFormPartial" model="@Model" />
-        </form>
-    </div>
-</div>
+
+@await Component.InvokeAsync("AddAddress", new { address = Model })
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

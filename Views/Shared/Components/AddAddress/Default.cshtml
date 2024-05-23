@@ -1,0 +1,73 @@
+@using AddressBook.DataTransferModels
+@model AddressDTM
+
+<section class="mb-3">
+
+    <h3>Filters</h3>
+
+    <form method="get">
+        @* Radio filter too choose FirstName, Surname, Email, PhoneNumber, City *@
+        <div class="d-flex gap-2 flex-wrap">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Filter.FilterBy" value="firstname" id="firstname"
+                @(Model.Filter.FilterBy == FilterBy.FirstName ? "checked=\"checked\"" : "") />
+                <label class="form-check-label" for="firstname">
+                    FirstName
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Filter.FilterBy" value="surname" id="surname"
+                @(Model.Filter.FilterBy == FilterBy.Surname ? "checked=\"checked\"" : "") />
+                <label class="form-check-label" for="surname">
+                    Surname
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Filter.FilterBy" value="email" id="email"
+                @(Model.Filter.FilterBy == FilterBy.Email ? "checked=\"checked\"" : "") />
+                <label class="form-check-label" for="email">
+                    Email
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Filter.FilterBy" value="phone" id="phone"
+                @(Model.Filter.FilterBy == FilterBy.Phone ? "checked=\"checked\"" : "") />
+                <label class="form-check-label" for="phoneNumber">
+                    PhoneNumber
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Filter.FilterBy" value="city" id="city"
+                @(Model.Filter.FilterBy == FilterBy.City ? "checked=\"checked\"" : "") />
+                <label class="form-check-label" for="city">
+                    City
+                </label>
+            </div>
+        </div>
+        @* Search *@
+        <div class="form-floating mb-3">
+            <input asp-for="Filter.Search" class="form-control w-100">
+            <label asp-for="Filter.Search">Search</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+</section>
+
+<p class="badge bg-info">Total items: @Model.TotalCount</p>
+<ul class="d-flex gap-2 m-0 p-0 flex-wrap justify-content-center">
+    @foreach (var address in Model.UsersSuggestions)
+    {
+        <li class="card">
+            <div class="card-body">
+                <h5 class="card-title">@address.User.FirstName @address.User.Surname</h5>
+                <p class="card-text">@address.Street, @address.City, @address.Country</p>
+                <a asp-controller="User" asp-action="AddAddress" class="btn btn-primary">Add</a>
+            </div>
+        </li>
+    }
+</ul>

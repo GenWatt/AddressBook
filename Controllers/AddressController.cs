@@ -1,3 +1,4 @@
+using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using AddressBook.Services.AddressService;
 using Microsoft.AspNetCore.Mvc;
@@ -18,20 +19,21 @@ public class AddressController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var addresses = await _addressService.GetAllWithUser();
+        var addresses = await _addressService.GetAllWithUser(new FilterDTM());
         return View(addresses);
     }
 
-    public IActionResult AddAddress()
+    public async Task<IActionResult> AddAddress(FilterDTM filter)
     {
-        return View();
+        var totalCount = await _addressService.Count(filter);
+        return View(new AddressDTM { Filter = filter, TotalCount = totalCount });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddAddress(AddressModel address)
+    public async Task<IActionResult> AddAddress(int id)
     {
-        await _addressService.Add(address);
+        await _addressService.Add(id);
         return RedirectToAction(nameof(Index));
     }
 

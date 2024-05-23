@@ -2,7 +2,7 @@
 
 namespace AddressBook.Repository;
 
-public interface IRepository<TEntity> where TEntity : BaseEntity
+public interface IRepository<TEntity>
 {
     Task<TEntity?> GetById(int id);
     Task<TEntity?> GetById(TEntity entity);

@@ -1,7 +1,6 @@
 @using AddressBook.DataTransferModels
 @model SelectDTM
 
-@Model.CountryData.Count
 <div class="form-floating mb-3" id="">
     <select id="countrySelect" class="form-select" aria-required="true">
         @foreach (var country in Model.CountryData)

@@ -1,6 +1,7 @@
 ﻿using AddressBook.Data;
 using AddressBook.Models;
 using AddressBook.Repository.AddressRepository;
+using AddressBook.Repository.UserRepository;
 using AddressBook.Services.AddressService;
 using AddressBook.UOW;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ public static class Helpers
     {
         // Repositories
         services.AddScoped<IAddressRepository, AddressRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -35,21 +37,24 @@ public static class Helpers
         {
             var user1 = new UserModel
             {
-                UserName = "user1",
+                FirstName = "user1",
+                Surname = "user11",
                 Email = "user1@op.pl",
                 EmailConfirmed = true,
             };
 
             var user2 = new UserModel
             {
-                UserName = "user2",
+                FirstName = "user2",
+                Surname = "user22",
                 Email = "user2@op.pl",
                 EmailConfirmed = true,
             };
 
             var user3 = new UserModel
             {
-                UserName = "user3",
+                FirstName = "user3",
+                Surname = "user33",
                 Email = "user3@op.pl",
                 EmailConfirmed = true,
             };
@@ -90,12 +95,67 @@ public static class Helpers
                 UpdatedAt = DateTime.Now.AddMonths(-1),
                 User = user3
             };
+
+            var user4 = new UserModel
+            {
+                FirstName = "user4",
+                Surname = "user44",
+                Email = "user4@op.pl",
+                EmailConfirmed = true,
+            };
+
+            var user5 = new UserModel
+            {
+                FirstName = "user5",
+                Surname = "user55",
+                Email = "user5@op.pl",
+                EmailConfirmed = true,
+            };
+
+            var address4 = new AddressModel
+            {
+                City = "San Francisco",
+                Street = "Market Street",
+                Zip = "94103",
+                Country = "USA",
+                CountryCode = "US",
+                CountryFlagUrl = "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/US.svg",
+                CreatedAt = DateTime.Now.AddDays(-3),
+                User = user4
+            };
+
+            var address5 = new AddressModel
+            {
+                City = "Boston",
+                Street = "Boylston Street",
+                Zip = "02116",
+                Country = "USA",
+                CountryCode = "US",
+                CountryFlagUrl = "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/US.svg",
+                CreatedAt = DateTime.Now.AddDays(-4),
+                User = user5
+            };
+
+            Console.WriteLine("Seeding data...");
             user1.Address = address1;
             user2.Address = address2;
             user3.Address = address3;
+            user4.Address = address4;
+            user5.Address = address5;
+
             await userManager.CreateAsync(user1, "Password123!");
             await userManager.CreateAsync(user2, "Password123!");
             await userManager.CreateAsync(user3, "Password123!");
+            await userManager.CreateAsync(user4, "Password123!");
+            await userManager.CreateAsync(user5, "Password123!");
+
+            context.Addresses.Add(address1);
+            context.Addresses.Add(address2);
+            context.Addresses.Add(address3);
+            context.Addresses.Add(address4);
+            context.Addresses.Add(address5);
+
+            await context.SaveChangesAsync();
         }
     }
 

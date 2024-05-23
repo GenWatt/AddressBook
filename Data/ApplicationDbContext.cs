@@ -16,6 +16,11 @@ namespace AddressBook.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserModel>()
+                .HasOne(user => user.Address)
+                .WithOne(address => address.User)
+                .HasForeignKey<UserModel>(user => user.AddressId);
         }
     }
 }

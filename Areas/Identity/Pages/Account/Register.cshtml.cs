@@ -126,6 +126,8 @@ namespace AddressBook.Areas.Identity.Pages.Account
             public string Country { get; set; }
             [Required]
             public string CountryCode { get; set; }
+            [Required]
+            public string CountryFlagUrl { get; set; }
         }
 
 
@@ -165,7 +167,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
                         Zip = Input.Zip,
                         Country = Input.Country,
                         CountryCode = Input.CountryCode,
-
+                        CountryFlagUrl = Input.CountryFlagUrl
                     }
                 };
                 Console.WriteLine(user.Address.CountryCode);

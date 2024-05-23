@@ -20,7 +20,7 @@ export class CountrySelector {
         if (userCountryCode) {
             const userCountryCodeUppercase = userCountryCode.toUpperCase();
             const userCountryData = this.allCountryCodes[userCountryCodeUppercase];
-            console.log(userCountryData);
+
             if (userCountryData) {
                 $('#countrySelect').val(userCountryCodeUppercase);
                 this.updateCountryData(userCountryData.name, userCountryData.image);
@@ -36,6 +36,7 @@ export class CountrySelector {
     updateCountryFlag(url, name) {
         $('#countryFlag').attr('src', url);
         $('#countryFlag').attr('alt', name);
+        $('#Input_CountryFlagUrl').val(url);
     }
 
     updateCountryName(name) {

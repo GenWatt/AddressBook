@@ -4,6 +4,7 @@ using AddressBook.Repository.AddressRepository;
 using AddressBook.Services.AddressService;
 using AddressBook.UOW;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AddressBook.Helpers;
 
@@ -96,6 +97,17 @@ public static class Helpers
             await userManager.CreateAsync(user2, "Password123!");
             await userManager.CreateAsync(user3, "Password123!");
         }
+    }
+
+    public static string IsActive(this IHtmlHelper html, string controller, string action)
+    {
+        var routeData = html.ViewContext.RouteData.Values;
+        var routeAction = routeData["Action"].ToString();
+        var routeController = routeData["Controller"].ToString();
+
+        var returnActive = controller == routeController && action == routeAction;
+
+        return returnActive ? "show" : "";
     }
 }
 

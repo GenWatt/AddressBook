@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddressBook.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<UserModel>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -12,5 +12,10 @@ namespace AddressBook.Data
         }
 
         public DbSet<AddressModel> Addresses { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

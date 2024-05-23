@@ -1,6 +1,6 @@
 using AddressBook.Data;
 using AddressBook.Helpers;
-using Microsoft.AspNetCore.Identity;
+using AddressBook.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,14 +10,26 @@ var databaseName = builder.Configuration["DatabaseName"] ?? throw new Exception(
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase(databaseName));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<UserModel>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    if (builder.Environment.IsDevelopment())
+    {
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 3;
+    }
+}).AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddServices();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-app.SeedData();
+await app.SeedData();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

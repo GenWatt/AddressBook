@@ -8,6 +8,7 @@ public interface IAddressService
     Task<AddressModel?> GetById(AddressModel address);
     Task<AddressModel?> GetByCity(string city);
     Task<IEnumerable<AddressModel>> GetAll();
+    Task<IEnumerable<AddressModel>> GetAllWithUser();
 
     Task Add(AddressModel address);
     Task Update(AddressModel address);

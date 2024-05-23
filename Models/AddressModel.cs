@@ -1,4 +1,6 @@
-﻿namespace AddressBook.Models;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace AddressBook.Models;
 
 public class AddressModel : BaseEntity
 {
@@ -8,5 +10,7 @@ public class AddressModel : BaseEntity
     public string CountryCode { get; set; }
     public string Zip { get; set; }
     public string CountryFlagUrl { get; set; }
+
+    public UserModel User { get; set; }
 }
 

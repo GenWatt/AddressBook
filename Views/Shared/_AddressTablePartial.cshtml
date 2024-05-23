@@ -4,6 +4,8 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Flag</th>
+            <th>E-mail</th>
             <th>City</th>
             <th>Country</th>
             <th>Zip</th>
@@ -16,6 +18,11 @@
         @foreach (var address in Model)
         {
             <tr>
+                <td>
+                    <img src="@address.CountryFlagUrl" alt="@address.CountryCode">
+                </td>
+                <td>@address.User.Email</td>
+
                 <td>@address.City</td>
                 <td>@address.Country</td>
                 <td>@address.Zip</td>

@@ -35,6 +35,11 @@ public class AddressService : IAddressService
         return await _unitOfWork.addressRepository.GetAll();
     }
 
+    public async Task<IEnumerable<AddressModel>> GetAllWithUser()
+    {
+        return await _unitOfWork.addressRepository.GetAllWithUser();
+    }
+
     public async Task<AddressModel?> GetByCity(string city)
     {
         return await _unitOfWork.addressRepository.GetByCity(city);
@@ -47,7 +52,7 @@ public class AddressService : IAddressService
 
     public async Task<AddressModel?> GetById(AddressModel address)
     {
-       return await _unitOfWork.addressRepository.GetById(address);
+        return await _unitOfWork.addressRepository.GetById(address);
     }
 
     public async Task Update(AddressModel address)

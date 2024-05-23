@@ -8,7 +8,11 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -19,4 +23,34 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.img-flag {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.select2 {
+  width: 100% !important;
+
+}
+
+.select2-selection {
+  padding: 1rem .75rem !important;
+  /* This will add rounded corners */
+}
+
+.select2-selection__rendered {
+  line-height: 50px !important;
+  /* padding: 1rem .75rem !important; */
+  /* This will increase the height of the dropdown */
+}
+
+.select2-selection__arrow {
+  height: 50px !important;
+  /* This will increase the height of the arrow */
+}
+
+.select2-container .select2-selection--single {
+  height: auto !important;
 }

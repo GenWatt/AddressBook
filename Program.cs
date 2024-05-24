@@ -1,6 +1,7 @@
 using System.Threading.RateLimiting;
 using AddressBook.Data;
 using AddressBook.Helpers;
+using AddressBook.Middlewares;
 using AddressBook.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,6 +52,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseMiddleware<LogMiddleware>();
 
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();

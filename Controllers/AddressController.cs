@@ -1,7 +1,6 @@
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using AddressBook.Services;
-using AddressBook.Services.AddressService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -15,13 +14,11 @@ namespace AddressBook.Controllers;
 public class AddressController : Controller
 {
     private readonly ILogger<AddressController> _logger;
-    private readonly IAddressService _addressService;
     private readonly IUserService _userService;
 
-    public AddressController(ILogger<AddressController> logger, IAddressService addressService, IUserService userService)
+    public AddressController(ILogger<AddressController> logger, IUserService userService)
     {
         _logger = logger;
-        _addressService = addressService;
         _userService = userService;
     }
 
@@ -56,14 +53,6 @@ public class AddressController : Controller
         filter.UserId = currentUserId;
         var totalCount = await _userService.CountByFilter(filter);
         return View(new AddressDTM { Filter = filter, TotalCount = totalCount });
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddAddress(int id)
-    {
-        await _addressService.Add(id);
-        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Privacy()

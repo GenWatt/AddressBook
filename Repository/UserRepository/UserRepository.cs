@@ -1,4 +1,5 @@
 using AddressBook.Data;
+using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,53 @@ public class UserRepository : Repository<UserModel>, IUserRepository
     {
     }
 
+    private IQueryable<UserModel> ApplyFilter(IQueryable<UserModel> query, FilterDTM filter)
+    {
+        if (!string.IsNullOrEmpty(filter.Search))
+        {
+            query = query.Where(user => filter.FilterBy == FilterBy.FirstName && user.FirstName.Contains(filter.Search) ||
+                 filter.FilterBy == FilterBy.Surname && user.Surname.Contains(filter.Search) ||
+                 filter.FilterBy == FilterBy.Email && user.Email.Contains(filter.Search) ||
+                 filter.FilterBy == FilterBy.Phone && user.PhoneNumber.Contains(filter.Search) ||
+                 filter.FilterBy == FilterBy.City && user.Address.City.Contains(filter.Search));
+        }
+
+        return query;
+    }
+
+    public async Task<int> CountByFilter(FilterDTM filter)
+    {
+        var query = _context.Users.AsQueryable();
+
+        if (!string.IsNullOrEmpty(filter.Search))
+        {
+            query = ApplyFilter(query, filter);
+        }
+
+        return await query.CountAsync();
+    }
+
+    public async Task<IEnumerable<UserModel>> GetAllByFilter(FilterDTM filter)
+    {
+        var query = _context.Users
+            .Include(user => user.Users)
+            .Include(user => user.Address)
+            .AsQueryable();
+
+        var currentUser = await GetById(filter.UserId);
+        var excludeUserIds = currentUser?.Users.Select(user => user.Id).ToList();
+
+        if (!string.IsNullOrEmpty(filter.Search))
+        {
+            query = ApplyFilter(query, filter);
+        }
+
+        return await query.Skip((filter.Page - 1) * filter.PageSize)
+            .Take(filter.PageSize)
+            .Where(user => excludeUserIds == null || !excludeUserIds.Contains(user.Id))
+            .ToListAsync();
+    }
+
     public async Task<UserModel?> GetByEmail(string email)
     {
         return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
@@ -18,7 +66,7 @@ public class UserRepository : Repository<UserModel>, IUserRepository
     public async Task<IEnumerable<UserModel>> GetAllAddressesByUserId(string userId)
     {
         return await _context.Users
-            .Include(user => user.Addresses)
+            .Include(user => user.Users)
             .Where(user => user.Id == userId)
             .ToListAsync();
     }
@@ -26,8 +74,8 @@ public class UserRepository : Repository<UserModel>, IUserRepository
     public Task<UserModel?> GetById(string userId)
     {
         return _context.Users
-            .Include(user => user.Addresses)
-                .ThenInclude(address => address.User)
+            .Include(user => user.Users)
+                .ThenInclude(address => address.Address)
             .Include(user => user.Address)
             .FirstOrDefaultAsync(user => user.Id == userId);
     }

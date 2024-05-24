@@ -31,12 +31,26 @@ public class AddressController : Controller
         }
 
         var user = await _userService.GetById(userId);
+
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
         return View(user);
     }
 
     public async Task<IActionResult> AddAddress(FilterDTM filter)
     {
-        var totalCount = await _addressService.Count(filter);
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (currentUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        filter.UserId = currentUserId;
+        var totalCount = await _userService.CountByFilter(filter);
         return View(new AddressDTM { Filter = filter, TotalCount = totalCount });
     }
 

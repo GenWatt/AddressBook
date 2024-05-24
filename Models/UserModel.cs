@@ -16,5 +16,5 @@ public class UserModel : IdentityUser, IBaseEntity
     public DateTime? UpdatedAt { get; set; }
     int IBaseEntity.Id { get; set; }
 
-    public List<AddressModel> Addresses { get; set; } = new();
+    public List<UserModel> Users { get; set; } = new();
 }

@@ -1,5 +1,4 @@
-﻿using AddressBook.DataTransferModels;
-using AddressBook.Models;
+﻿using AddressBook.Models;
 using AddressBook.UOW;
 
 namespace AddressBook.Services.AddressService;
@@ -43,11 +42,6 @@ public class AddressService : IAddressService
         return await _unitOfWork.addressRepository.GetAll();
     }
 
-    public async Task<IEnumerable<AddressModel>> GetAllWithUser(FilterDTM filterBy)
-    {
-        return await _unitOfWork.addressRepository.GetAllWithUser(filterBy);
-    }
-
     public async Task<AddressModel?> GetByCity(string city)
     {
         return await _unitOfWork.addressRepository.GetByCity(city);
@@ -80,11 +74,6 @@ public class AddressService : IAddressService
 
         _unitOfWork.addressRepository.Update(existingAddress);
         await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task<int> Count(FilterDTM filter)
-    {
-        return await _unitOfWork.addressRepository.Count(filter);
     }
 }
 

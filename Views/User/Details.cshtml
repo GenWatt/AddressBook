@@ -1,0 +1,45 @@
+@using AddressBook.Models
+@model UserModel
+
+@{
+    ViewBag.Title = $"Details - {Model.FullName}";
+}
+
+<section>
+    <div class="card">
+        <div class="card-header">
+            <h1>Details - <strong class="text-primary">@Model.FirstName</strong></h1>
+        </div>
+        <div class="card-body">
+            <div class="py-1">
+                <div>
+                    E-mail:
+                    <span class="@(Model.EmailConfirmed ? "text-success" : "text-danger")">
+                        @Model.Email (@(Model.EmailConfirmed ? "Confirmed" : "Not Confirmed"))
+                    </span>
+                </div>
+                <div>
+                    Phone Number:
+                    <span>
+                        @if (string.IsNullOrEmpty(Model.PhoneNumber))
+                        {
+                            <span class="text-muted">No phone number</span>
+                        }
+                        else
+                        {
+                            @Model.PhoneNumber
+                        }
+                    </span>
+                </div>
+            </div>
+
+            <div>
+                <div class="d-flex align-items-center gap-1 badge bg-secondary">
+                    <p class="m-0">
+                        @Model.Address.Street, @Model.Address.City @Model.Address.Zip, @Model.Address.Country
+                    </p>
+                    <img class="img-flag" src="@Model.Address.CountryFlagUrl" alt="@Model.Address.CountryCode">
+                </div>
+            </div>
+        </div>
+</section>

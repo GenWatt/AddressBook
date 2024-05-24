@@ -1,25 +1,25 @@
+using System.Security.Claims;
 using AddressBook.DataTransferModels;
-using AddressBook.Repository.UserRepository;
-using AddressBook.Services.AddressService;
+using AddressBook.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AddressBook.ViewComponents;
 
 public class AddAddressViewComponent : ViewComponent
 {
-    private readonly IAddressService _addressService;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
-    public AddAddressViewComponent(IAddressService addressService, IUserRepository userRepository)
+    public AddAddressViewComponent(IUserService userService)
     {
-        _addressService = addressService;
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     public async Task<IViewComponentResult> InvokeAsync(AddressDTM address)
     {
-        var addresses = await _addressService.GetAllWithUser(address.Filter);
-        Console.WriteLine(address.TotalCount);
+        var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+        Console.WriteLine(userId);
+        address.Filter.UserId = userId;
+        var addresses = await _userService.GetAllByFilter(address.Filter);
         address.UsersSuggestions = addresses;
 
         return View(address);

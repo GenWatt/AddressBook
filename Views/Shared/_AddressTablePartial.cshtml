@@ -1,46 +1,31 @@
 ﻿@using AddressBook.Models
-@model IEnumerable<AddressModel>
+@model IEnumerable<UserModel>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Flag</th>
             <th>E-mail</th>
             <th>City</th>
             <th>Country</th>
             <th>Zip</th>
-            <th>Created At</th>
-            <th>Updated At</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var address in Model)
+        @foreach (var user in Model)
         {
             <tr>
-                <td>
-                    <img src="@address.CountryFlagUrl" alt="@address.CountryCode">
+                <td>@user.Email</td>
+                <td>@user.Address.City</td>
+                <td class="d-flex align-items-center gap-1">
+                    <img class="img-flag" src="@user.Address.CountryFlagUrl" alt="@user.Address.CountryCode">
+                    <span>@user.Address.Country</span>
                 </td>
-                <td>@address.User.Email</td>
-
-                <td>@address.City</td>
-                <td>@address.Country</td>
-                <td>@address.Zip</td>
-                <td>@address.CreatedAt</td>
-                <td>
-                    @if (address.UpdatedAt != null)
-                    {
-                        @address.UpdatedAt
-                    }
-                    else
-                    {
-                        <span class="text-muted">Never updated</span>
-                    }
-                </td>
+                <td>@user.Address.Zip</td>
 
                 <td>
-                    <a asp-action="Details" asp-route-id="@address.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@address.Id">Delete</a>
+                    <a asp-controller="User" asp-action="Details" asp-route-userId="@user.Id">Details</a> |
+                    <a asp-controller="User" asp-action="DeleteAddress" asp-route-userToDeleteId="@user.Id">Delete</a>
                 </td>
             </tr>
         }

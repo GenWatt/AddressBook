@@ -13,7 +13,7 @@ public class UserController : Controller
         _userService = userService;
     }
 
-    public async Task<IActionResult> AddAddress(int addressId)
+    public async Task<IActionResult> AddAddress(string userToAddId)
     {
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -22,7 +22,32 @@ public class UserController : Controller
             return Unauthorized();
         }
 
-        await _userService.AddAddressToUser(currentUserId, addressId);
+        await _userService.AddAddressToUser(currentUserId, userToAddId);
         return RedirectToAction("Index", "Address");
+    }
+
+    public async Task<IActionResult> DeleteAddress(string userToDeleteId)
+    {
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (currentUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        await _userService.DeleteAddressFormUser(currentUserId, userToDeleteId);
+        return RedirectToAction("Index", "Address");
+    }
+
+    public async Task<IActionResult> Details(string userId)
+    {
+        var user = await _userService.GetById(userId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return View(user);
     }
 }

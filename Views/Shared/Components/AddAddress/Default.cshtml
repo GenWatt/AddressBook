@@ -58,17 +58,25 @@
 </section>
 
 <p class="badge bg-info">Total items: @Model.TotalCount</p>
-<ul class="d-flex gap-2 m-0 p-0 flex-wrap justify-content-center">
-    @foreach (var address in Model.UsersSuggestions)
-    {
-        <li class="card">
-            <div class="card-body">
-                <h5 class="card-title">@address.User.FirstName @address.User.Surname</h5>
-                <p class="card-text">@address.Street, @address.City, @address.Country</p>
-                <a asp-controller="User" asp-action="AddAddress" asp-route-addressId="@address.Id" class="btn btn-primary">
-                    Add
-                </a>
-            </div>
-        </li>
-    }
-</ul>
+
+@if (!Model.UsersSuggestions.Any())
+{
+    <h4 class="text-center">No users found.</h4>
+}
+else
+{
+    <ul class="d-flex gap-2 m-0 p-0 flex-wrap justify-content-center">
+        @foreach (var user in Model.UsersSuggestions)
+        {
+            <li class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@user.FirstName @user.Surname</h5>
+                    <p class="card-text">@user.Address.Street, @user.Address.City, @user.Address.Country</p>
+                    <a asp-controller="User" asp-action="AddAddress" asp-route-userToAddId="@user.Id" class="btn btn-primary">
+                        Add
+                    </a>
+                </div>
+            </li>
+        }
+    </ul>
+}

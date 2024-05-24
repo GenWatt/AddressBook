@@ -12,9 +12,9 @@
 <a class="btn btn-primary" asp-action="AddAddress" asp-controller="Address">Add Address</a>
 
 <section>
-    @if (Model.Addresses.Count > 0)
+    @if (Model.Users.Count > 0)
     {
-        <partial name="_AddressTablePartial" model="@Model.Addresses" />
+        <partial name="_AddressTablePartial" model="@Model.Users" />
     }
     else
     {

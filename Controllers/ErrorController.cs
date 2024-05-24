@@ -15,7 +15,7 @@ namespace AddressBook.Controllers
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
-            Console.WriteLine("Error: " + statusCode);
+            Console.WriteLine("ErrorController.HttpStatusCodeHandler " + statusCode);
             switch (statusCode)
             {
                 case 404:

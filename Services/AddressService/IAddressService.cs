@@ -1,5 +1,4 @@
-﻿using AddressBook.DataTransferModels;
-using AddressBook.Models;
+﻿using AddressBook.Models;
 
 namespace AddressBook.Services.AddressService;
 
@@ -9,7 +8,6 @@ public interface IAddressService
     Task<AddressModel?> GetById(AddressModel address);
     Task<AddressModel?> GetByCity(string city);
     Task<IEnumerable<AddressModel>> GetAll();
-    Task<IEnumerable<AddressModel>> GetAllWithUser(FilterDTM filter);
 
     Task Add(int id);
     Task Update(AddressModel address);
@@ -17,6 +15,5 @@ public interface IAddressService
     Task Delete(int id);
     Task Delete(AddressModel address);
 
-    Task<int> Count(FilterDTM filter);
 }
 

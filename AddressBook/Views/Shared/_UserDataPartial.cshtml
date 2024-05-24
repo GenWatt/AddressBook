@@ -1,0 +1,74 @@
+@using AddressBook.DataTransferModels
+@model UserDataDTM
+
+<div class="form-floating mb-3">
+    <input asp-for="FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="Elon" />
+    <label asp-for="FirstName" class="form-label">Firstname</label>
+    <span asp-validation-for="FirstName" class="text-danger"></span>
+</div>
+<div class="form-floating mb-3">
+    <input asp-for="Surname" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Musk" />
+    <label asp-for="Surname" class="form-label">Surname</label>
+    <span asp-validation-for="Surname" class="text-danger"></span>
+</div>
+
+<h2>Address</h2>
+
+<div class="form-floating mb-3">
+    <input asp-for="Street" class="form-control" autocomplete="street-address" aria-required="true"
+        placeholder="Bielska" />
+    <label asp-for="Street">Street</label>
+    <span asp-validation-for="Street" class="text-danger"></span>
+</div>
+<div class="form-floating mb-3">
+    <input asp-for="City" class="form-control" autocomplete="address-level2" aria-required="true"
+        placeholder="Bielsko-Biała" />
+    <label asp-for="City">City</label>
+    <span asp-validation-for="City" class="text-danger"></span>
+</div>
+
+<div class="d-flex gap-2">
+    <img class="img-flag" id="countryFlag" src="@Model.CountryFlagUrl" alt="@Model.Country">
+    <select id="countrySelect" asp-for="CountryCode" class="form-select form-select-lg mb-3" aria-required="true"
+        aria-label="Country select">
+        @foreach (var country in Model.SelectData.CountryData)
+        {
+            <option value="@country.Key">
+                @country.Value.Name (@country.Key)
+            </option>
+        }
+    </select>
+
+    <input type="hidden" asp-for="Country" />
+    <input type="hidden" asp-for="CountryFlagUrl" />
+</div>
+
+<div class="form-floating mb-3">
+    <input asp-for="Zip" class="form-control" autocomplete="postal-code" aria-required="true" placeholder="43-300" />
+    <label asp-for="Zip">Zip</label>
+    <span asp-validation-for="Zip" class="text-danger"></span>
+</div>
+
+<h2>Contact</h2>
+
+<div class="form-group mb-3">
+    <label asp-for="PhoneNumber">Phone number</label>
+    <div class="d-flex gap-2">
+        <select id="PhoneCodeSelect" asp-for="PhoneNumberCode" autocomplete="tel-area-code"
+            class="form-select form-select-lg w-auto" aria-required="true" aria-label="Phone code select">
+            @foreach (var country in Model.SelectData.CountryData)
+            {
+                @if (string.IsNullOrEmpty(country.Value.Phone[0]) || country.Value.Phone[0].Length == 1)
+                    continue;
+                <option value="@country.Key">
+                    @country.Key @country.Value.Phone[0]
+                </option>
+            }
+        </select>
+
+        <input asp-for="PhoneNumber" class="form-control" autocomplete="tel" aria-required="true"
+            placeholder="123456789" />
+    </div>
+
+    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+</div>

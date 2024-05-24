@@ -69,13 +69,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-
-        public CountryDictionary CountryData = new();
+        public UserDataDTM UserData { get; set; } = new();
         public class InputModel
         {
             /// <summary>
@@ -124,6 +118,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
             [Required]
             public string City { get; set; }
             [Required]
+            [DataType(DataType.PostalCode)]
             public string Zip { get; set; }
             [Required]
             public string Country { get; set; }
@@ -133,26 +128,23 @@ namespace AddressBook.Areas.Identity.Pages.Account
             public string CountryFlagUrl { get; set; }
         }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            await GetCountryData();
+        }
+
+        private async Task GetCountryData()
+        {
             var jsonFile = await System.IO.File.ReadAllTextAsync("wwwroot/Json/CountryData.json");
-            CountryData = JsonConvert.DeserializeObject<CountryDictionary>(jsonFile);
+            var countryData = JsonConvert.DeserializeObject<CountryDictionary>(jsonFile);
+            UserData.CountryData = countryData;
+            UserData.SelectData.CountryData = countryData;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
-            // Console log all errrors
-            foreach (var modelState in ModelState.Values)
-            {
-                foreach (var error in modelState.Errors)
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-            }
 
             if (ModelState.IsValid)
             {
@@ -163,6 +155,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
                     UserName = Input.Email,
                     Email = Input.Email,
                     PhoneNumber = Input.PhoneNumber,
+                    PhoneNumberCode = Input.PhoneNumberCode,
                     Address = new AddressModel
                     {
                         Street = Input.Street,
@@ -198,8 +191,8 @@ namespace AddressBook.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // If we got this far, something failed, redisplay form
+            await GetCountryData();
             return Page();
         }
 

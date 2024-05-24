@@ -1,7 +1,7 @@
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
 
-namespace AddressBook.Services;
+namespace AddressBook.Services.UserService;
 
 public interface IUserService
 {
@@ -13,4 +13,5 @@ public interface IUserService
     Task<int> CountByFilter(FilterDTM filter);
 
     Task DeleteAddressFormUser(string userId, string userToDeleteId);
+    Task Update(UserDataPostDTM user);
 }

@@ -32,7 +32,6 @@ public class UserRepository : Repository<UserModel>, IUserRepository
         return query.Where(user => excludeUserIds == null || !excludeUserIds.Contains(user.Id));
     }
 
-
     public async Task<int> CountByFilter(FilterDTM filter)
     {
         var query = _context.Users.AsQueryable();

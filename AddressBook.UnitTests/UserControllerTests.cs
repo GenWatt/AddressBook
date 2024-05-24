@@ -1,7 +1,10 @@
 using System.Security.Claims;
 using AddressBook.Controllers;
+using AddressBook.DataTransferModels;
 using AddressBook.Models;
-using AddressBook.Services;
+using AddressBook.Services.FileService;
+using AddressBook.Services.UserService;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -15,9 +18,12 @@ public class UserControllerTests
     {
         // Arrange
         var userServiceMock = new Mock<IUserService>();
+        var fileServiceMock = new Mock<IFileService>();
+        var autoMapperMock = new Mock<IMapper>();
+
         userServiceMock.Setup(x => x.AddAddressToUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
-        var controller = new UserController(userServiceMock.Object);
+        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
         var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
               new Claim(ClaimTypes.NameIdentifier, "currentUserId")
@@ -43,9 +49,12 @@ public class UserControllerTests
     {
         // Arrange
         var userServiceMock = new Mock<IUserService>();
-        userServiceMock.Setup(x => x.DeleteAddressFormUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+        var fileServiceMock = new Mock<IFileService>();
+        var autoMapperMock = new Mock<IMapper>();
 
-        var controller = new UserController(userServiceMock.Object);
+        userServiceMock.Setup(x => x.AddAddressToUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+
+        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
         var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
                 new Claim(ClaimTypes.NameIdentifier, "currentUserId")
@@ -73,7 +82,9 @@ public class UserControllerTests
         var userServiceMock = new Mock<IUserService>();
         userServiceMock.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(new UserModel { Id = "userId", FirstName = "John" });
 
-        var controller = new UserController(userServiceMock.Object);
+        var fileServiceMock = new Mock<IFileService>();
+        var autoMapperMock = new Mock<IMapper>();
+        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
 
         // Act
         var result = await controller.Details("userId") as ViewResult;
@@ -93,7 +104,9 @@ public class UserControllerTests
         var userServiceMock = new Mock<IUserService>();
         userServiceMock.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync((UserModel)null);
 
-        var controller = new UserController(userServiceMock.Object);
+        var fileServiceMock = new Mock<IFileService>();
+        var autoMapperMock = new Mock<IMapper>();
+        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
 
         // Act
         var result = await controller.Details("nonExistingUserId") as NotFoundResult;

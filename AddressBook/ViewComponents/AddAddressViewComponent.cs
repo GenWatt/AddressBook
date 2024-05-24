@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using AddressBook.DataTransferModels;
-using AddressBook.Services;
+using AddressBook.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AddressBook.ViewComponents;

@@ -1,0 +1,29 @@
+@using AddressBook.DataTransferModels
+@model UserDataDTM
+
+@{
+    ViewData["Title"] = $"Update {Model.FirstName} {Model.Surname}";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-controller="User" asp-action="Update" method="post">
+    @Html.AntiForgeryToken()
+
+    @* <input type="hidden" asp-for="Id" /> *@
+
+    <partial name="_UserDataPartial" model="@Model" />
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/register.js"></script>
+    <script>
+        $(document).ready(function () {
+            const allCountryCodes = @Html.Raw(Json.Serialize(Model.CountryData));
+            const countrySelector = new CountrySelector(allCountryCodes, false);
+        });
+    </script>
+}

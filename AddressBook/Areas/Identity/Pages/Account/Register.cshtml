@@ -3,8 +3,6 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
-
-    var selectData = new SelectDTM { Value = Model.Input.CountryCode, CountryData = Model.CountryData };
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -15,14 +13,15 @@
             <h2>Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
             <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" autocomplete="firstName" aria-required="true"
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true"
                     placeholder="Elon" />
                 <label asp-for="Input.FirstName" class="form-label">Firstname</label>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Surname" class="form-control" autocomplete="surname" aria-required="true"
+                <input asp-for="Input.Surname" class="form-control" autocomplete="family-name" aria-required="true"
                     placeholder="Musk" />
                 <label asp-for="Input.Surname" class="form-label">Surname</label>
                 <span asp-validation-for="Input.Surname" class="text-danger"></span>
@@ -31,13 +30,13 @@
             <h2>Address</h2>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Street" class="form-control" autocomplete="street" aria-required="true"
+                <input asp-for="Input.Street" class="form-control" autocomplete="street-address" aria-required="true"
                     placeholder="Bielska" />
                 <label asp-for="Input.Street">Street</label>
                 <span asp-validation-for="Input.Street" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.City" class="form-control" autocomplete="City" aria-required="true"
+                <input asp-for="Input.City" class="form-control" autocomplete="address-level2" aria-required="true"
                     placeholder="Bielsko-Biała" />
                 <label asp-for="Input.City">City</label>
                 <span asp-validation-for="Input.City" class="text-danger"></span>
@@ -47,7 +46,7 @@
                 <img class="img-flag" id="countryFlag" src="" alt="">
                 <select id="countrySelect" asp-for="Input.CountryCode" class="form-select form-select-lg mb-3"
                     aria-required="true" aria-label="Country select">
-                    @foreach (var country in selectData.CountryData)
+                    @foreach (var country in Model.UserData.CountryData)
                     {
                         <option value="@country.Key">
                             @country.Value.Name (@country.Key)
@@ -60,7 +59,7 @@
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Zip" class="form-control" autocomplete="Zip" aria-required="true"
+                <input asp-for="Input.Zip" class="form-control" autocomplete="postal-code" aria-required="true"
                     placeholder="43-300" />
                 <label asp-for="Input.Zip">Zip</label>
                 <span asp-validation-for="Input.Zip" class="text-danger"></span>
@@ -71,20 +70,20 @@
             <div class="form-group mb-3">
                 <label asp-for="Input.PhoneNumber">Phone number</label>
                 <div class="d-flex gap-2">
-                    <select id="PhoneCodeSelect" asp-for="Input.PhoneNumberCode"
+                    <select id="PhoneCodeSelect" asp-for="Input.PhoneNumberCode" autocomplete="tel-area-code"
                         class="form-select form-select-lg w-auto" aria-required="true" aria-label="Phone code select">
-                        @foreach (var country in selectData.CountryData)
+                        @foreach (var country in Model.UserData.CountryData)
                         {
                             @if (string.IsNullOrEmpty(country.Value.Phone[0]) || country.Value.Phone[0].Length == 1)
                                 continue;
                             <option value="@country.Key">
-                                @country.Value.Phone[0]
+                                @country.Key @country.Value.Phone[0]
                             </option>
                         }
                     </select>
 
-                    <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="PhoneNumber"
-                        aria-required="true" placeholder="123456789" />
+                    <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" aria-required="true"
+                        placeholder="123456789" />
                 </div>
 
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
@@ -116,11 +115,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script type="module">
-        import { CountrySelector } from '/js/register.js';
-
+    <script src="~/js/register.js"></script>
+    <script>
         $(document).ready(function () {
-            const allCountryCodes = @Html.Raw(Json.Serialize(Model.CountryData));
+            const allCountryCodes = @Html.Raw(Json.Serialize(Model.UserData.CountryData));
             const countrySelector = new CountrySelector(allCountryCodes);
         });
     </script>

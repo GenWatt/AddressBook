@@ -1,30 +1,59 @@
-export class CountrySelector {
-    constructor(allCountryCodes) {
+class CountrySelector {
+    constructor(allCountryCodes, shouldInitialize = true) {
         this.allCountryCodes = allCountryCodes;
+        this.shouldInitialize = shouldInitialize;
+        this.countryFlagInputId = shouldInitialize ? 'Input_CountryFlagUrl' : 'CountryFlagUrl';
+        this.countryInputId = shouldInitialize ? 'Input_Country' : 'Country';
         this.initialize();
     }
 
     initialize() {
-        $('#countrySelect').on('change', () => {
-            const countryCode = $('#countrySelect').val();
-            const countryData = this.allCountryCodes[countryCode];
-            if (countryData) {
-                this.updateCountryData(countryData.name, countryData.image);
-            }
-        });
-        this.setUserCountry();
+        $('#countrySelect').on('change', this.handleChange);
+
+        if (this.shouldInitialize) {
+            this.setUserCountry();
+            this.setPhoneCode()
+        } else {
+            this.handleChange();
+        }
+    }
+
+    handleChange = () => {
+        const countryCode = $('#countrySelect').val();
+        const countryData = this.allCountryCodes[countryCode];
+        console.log(countryData);
+        if (countryData) {
+            this.updateCountryData(countryData.name, countryData.image);
+        }
+    }
+
+    getCountryData() {
+        const userCountryCode = navigator.language.split("-")[0];
+        let userCountryData = null;
+        let userCountryCodeUppercase = null;
+
+        if (userCountryCode) {
+            userCountryCodeUppercase = userCountryCode.toUpperCase();
+            userCountryData = this.allCountryCodes[userCountryCodeUppercase];
+        }
+
+        return { userCountryCodeUppercase, userCountryData };
+    }
+
+    setPhoneCode() {
+        const { userCountryCodeUppercase, userCountryData } = this.getCountryData();
+
+        if (userCountryData) {
+            $('#PhoneCodeSelect').val(userCountryCodeUppercase);
+        }
     }
 
     setUserCountry() {
-        const userCountryCode = navigator.language.split("-")[0];
-        if (userCountryCode) {
-            const userCountryCodeUppercase = userCountryCode.toUpperCase();
-            const userCountryData = this.allCountryCodes[userCountryCodeUppercase];
+        const { userCountryCodeUppercase, userCountryData } = this.getCountryData();
 
-            if (userCountryData) {
-                $('#countrySelect').val(userCountryCodeUppercase);
-                this.updateCountryData(userCountryData.name, userCountryData.image);
-            }
+        if (userCountryData) {
+            $('#countrySelect').val(userCountryCodeUppercase);
+            this.updateCountryData(userCountryData.name, userCountryData.image);
         }
     }
 
@@ -36,10 +65,10 @@ export class CountrySelector {
     updateCountryFlag(url, name) {
         $('#countryFlag').attr('src', url);
         $('#countryFlag').attr('alt', name);
-        $('#Input_CountryFlagUrl').val(url);
+        $(`#${this.countryFlagInputId}`).val(url);
     }
 
     updateCountryName(name) {
-        $('#Input_Country').val(name);
+        $(`#${this.countryInputId}`).val(name);
     }
 }

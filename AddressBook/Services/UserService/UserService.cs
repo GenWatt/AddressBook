@@ -1,16 +1,19 @@
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using AddressBook.UOW;
+using AutoMapper;
 
-namespace AddressBook.Services;
+namespace AddressBook.Services.UserService;
 
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public UserService(IUnitOfWork unitOfWork)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
     public async Task AddAddressToUser(string userId, string userToAddId)
@@ -69,6 +72,21 @@ public class UserService : IUserService
         }
 
         user.Users.Remove(userToDelete);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task Update(UserDataPostDTM userData)
+    {
+        UserModel? userToUpdate = await _unitOfWork.userRepository.GetById(userData.Id);
+
+        if (userToUpdate == null)
+        {
+            throw new Exception("User not found");
+        }
+        Console.WriteLine(userData.FirstName);
+        _mapper.Map(userData, userToUpdate);
+        Console.WriteLine(userToUpdate.FirstName);
+        _unitOfWork.userRepository.Update(userToUpdate);
         await _unitOfWork.SaveChangesAsync();
     }
 }

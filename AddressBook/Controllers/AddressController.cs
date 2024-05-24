@@ -1,6 +1,6 @@
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
-using AddressBook.Services;
+using AddressBook.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -13,12 +13,10 @@ namespace AddressBook.Controllers;
 [Authorize]
 public class AddressController : Controller
 {
-    private readonly ILogger<AddressController> _logger;
     private readonly IUserService _userService;
 
-    public AddressController(ILogger<AddressController> logger, IUserService userService)
+    public AddressController(IUserService userService)
     {
-        _logger = logger;
         _userService = userService;
     }
 

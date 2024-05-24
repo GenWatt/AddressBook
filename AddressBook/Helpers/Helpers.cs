@@ -1,14 +1,45 @@
 ﻿using AddressBook.Data;
+using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using AddressBook.Repository.AddressRepository;
 using AddressBook.Repository.UserRepository;
-using AddressBook.Services;
 using AddressBook.Services.AddressService;
+using AddressBook.Services.FileService;
+using AddressBook.Services.UserService;
 using AddressBook.UOW;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AddressBook.Helpers;
+
+public class CustomProfile : Profile
+{
+    public CustomProfile()
+    {
+        CreateMap<UserModel, UserDataDTM>()
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City))
+            .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street))
+            .ForMember(dest => dest.Zip, opt => opt.MapFrom(src => src.Address.Zip))
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address.Country))
+            .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.Address.CountryCode))
+            .ForMember(dest => dest.CountryFlagUrl, opt => opt.MapFrom(src => src.Address.CountryFlagUrl))
+            .ForMember(dest => dest.PhoneNumberCode, opt => opt.MapFrom(src => src.PhoneNumberCode))
+            .ReverseMap();
+
+        CreateMap<UserModel, UserDataPostDTM>()
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City))
+            .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street))
+            .ForMember(dest => dest.Zip, opt => opt.MapFrom(src => src.Address.Zip))
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address.Country))
+            .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.Address.CountryCode))
+            .ForMember(dest => dest.CountryFlagUrl, opt => opt.MapFrom(src => src.Address.CountryFlagUrl))
+            .ForMember(dest => dest.PhoneNumberCode, opt => opt.MapFrom(src => src.PhoneNumberCode))
+            .ReverseMap();
+
+        CreateMap<UserModel, UserModel>();
+    }
+}
 
 public static class Helpers
 {
@@ -23,7 +54,10 @@ public static class Helpers
         // Services
         services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IFileService, FileService>();
 
+        // Automapper
+        services.AddAutoMapper(typeof(CustomProfile));
         return services;
     }
 

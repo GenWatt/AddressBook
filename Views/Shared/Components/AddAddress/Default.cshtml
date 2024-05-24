@@ -64,11 +64,13 @@
             <label asp-for="Filter.Search">Search</label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Filter</button>
+        <button type="submit" class="btn btn-primary">
+            <p class="m-0">Filter (Total items: @Model.TotalCount)</p>
+        </button>
     </form>
 </section>
 
-<p class="badge bg-info">Total items: @Model.TotalCount</p>
+
 
 @if (!Model.UsersSuggestions.Any())
 {
@@ -76,7 +78,7 @@
 }
 else
 {
-    <ul class="d-flex gap-2 m-0 p-0 flex-wrap justify-content-center">
+    <ul class="address-grid mb-3 p-0">
         @foreach (var user in Model.UsersSuggestions)
         {
             <li class="card">

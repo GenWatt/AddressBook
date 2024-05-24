@@ -1,33 +1,45 @@
 ﻿@using AddressBook.Models
 @model IEnumerable<UserModel>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>E-mail</th>
-            <th>City</th>
-            <th>Country</th>
-            <th>Zip</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
+<section style="overflow-x: auto;">
+    <table class="table">
+        <thead>
             <tr>
-                <td>@user.Email</td>
-                <td>@user.Address.City</td>
-                <td class="d-flex align-items-center gap-1">
-                    <img class="img-flag" src="@user.Address.CountryFlagUrl" alt="@user.Address.CountryCode">
-                    <span>@user.Address.Country</span>
-                </td>
-                <td>@user.Address.Zip</td>
-
-                <td>
-                    <a asp-controller="User" asp-action="Details" asp-route-userId="@user.Id">Details</a> |
-                    <a asp-controller="User" asp-action="DeleteAddress" asp-route-userToDeleteId="@user.Id">Delete</a>
-                </td>
+                <th>E-mail</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Zip</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.Address.City</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-1">
+                            <img class="img-flag" src="@user.Address.CountryFlagUrl" alt="@user.Address.CountryCode">
+                            <span>@user.Address.Country</span>
+                        </div>
+                    </td>
+                    <td style="min-width: 5rem;">@user.Address.Zip</td>
+
+                    <td style="min-width: 5rem;">
+                        <div class="d-flex flex-wrap gap-1">
+                            <a title="See details about @user.FullName" class="btn-sm btn-primary" asp-controller="User"
+                                asp-action="Details" asp-route-userId="@user.Id">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </a>
+                            <a title="Delete @user.FullName from address list" class="btn-sm btn-danger"
+                                asp-controller="User" asp-action="DeleteAddress" asp-route-userToDeleteId="@user.Id">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

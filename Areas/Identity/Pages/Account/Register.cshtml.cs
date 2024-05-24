@@ -107,13 +107,16 @@ namespace AddressBook.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
+            [Display(Name = "First Name")]
             public string FirstName { get; set; }
             [Required]
             public string Surname { get; set; }
             [Required]
             [DataType(DataType.PhoneNumber)]
+            [Display(Name = "Phone Number")]
             public string PhoneNumber { get; set; }
             [Required]
+            [Display(Name = "Phone Number Code")]
             public string PhoneNumberCode { get; set; }
 
             [Required]

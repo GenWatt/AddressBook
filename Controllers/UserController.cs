@@ -1,9 +1,13 @@
 using System.Security.Claims;
 using AddressBook.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AddressBook.Controllers;
 
+[EnableRateLimiting("fixed")]
+[Authorize]
 public class UserController : Controller
 {
     private readonly IUserService _userService;

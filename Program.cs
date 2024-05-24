@@ -33,7 +33,7 @@ builder.Services.AddRateLimiter(_ =>
     _.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     _.AddPolicy("fixed", httpContext => RateLimitPartition.GetFixedWindowLimiter(
        partitionKey: httpContext.Connection.RemoteIpAddress.ToString(),
-       factory: partition => new FixedWindowRateLimiterOptions { PermitLimit = 2, Window = TimeSpan.FromSeconds(10) }));
+       factory: partition => new FixedWindowRateLimiterOptions { PermitLimit = 25, Window = TimeSpan.FromSeconds(10) }));
 });
 
 

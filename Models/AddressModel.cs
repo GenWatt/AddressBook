@@ -1,5 +1,4 @@
-﻿
-namespace AddressBook.Models;
+﻿namespace AddressBook.Models;
 
 public class AddressModel : IBaseEntity
 {

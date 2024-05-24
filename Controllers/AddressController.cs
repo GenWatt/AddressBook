@@ -2,12 +2,16 @@ using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using AddressBook.Services;
 using AddressBook.Services.AddressService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Diagnostics;
 using System.Security.Claims;
 
 namespace AddressBook.Controllers;
 
+[EnableRateLimiting("fixed")]
+[Authorize]
 public class AddressController : Controller
 {
     private readonly ILogger<AddressController> _logger;

@@ -1,8 +1,10 @@
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
+using AddressBook.Services;
 using AddressBook.Services.AddressService;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace AddressBook.Controllers;
 
@@ -10,17 +12,26 @@ public class AddressController : Controller
 {
     private readonly ILogger<AddressController> _logger;
     private readonly IAddressService _addressService;
+    private readonly IUserService _userService;
 
-    public AddressController(ILogger<AddressController> logger, IAddressService addressService)
+    public AddressController(ILogger<AddressController> logger, IAddressService addressService, IUserService userService)
     {
         _logger = logger;
         _addressService = addressService;
+        _userService = userService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var addresses = await _addressService.GetAllWithUser(new FilterDTM());
-        return View(addresses);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _userService.GetById(userId);
+        return View(user);
     }
 
     public async Task<IActionResult> AddAddress(FilterDTM filter)

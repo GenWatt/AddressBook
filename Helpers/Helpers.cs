@@ -2,6 +2,7 @@
 using AddressBook.Models;
 using AddressBook.Repository.AddressRepository;
 using AddressBook.Repository.UserRepository;
+using AddressBook.Services;
 using AddressBook.Services.AddressService;
 using AddressBook.UOW;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +22,7 @@ public static class Helpers
 
         // Services
         services.AddScoped<IAddressService, AddressService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }
@@ -39,24 +41,24 @@ public static class Helpers
             {
                 FirstName = "user1",
                 Surname = "user11",
+                UserName = "user1@op.pl",
                 Email = "user1@op.pl",
-                EmailConfirmed = true,
             };
 
             var user2 = new UserModel
             {
                 FirstName = "user2",
                 Surname = "user22",
+                UserName = "user2@op.pl",
                 Email = "user2@op.pl",
-                EmailConfirmed = true,
             };
 
             var user3 = new UserModel
             {
                 FirstName = "user3",
                 Surname = "user33",
+                UserName = "user3@op.pl",
                 Email = "user3@op.pl",
-                EmailConfirmed = true,
             };
 
             var address1 = new AddressModel
@@ -100,6 +102,7 @@ public static class Helpers
             {
                 FirstName = "user4",
                 Surname = "user44",
+                UserName = "user4@op.pl",
                 Email = "user4@op.pl",
                 EmailConfirmed = true,
             };
@@ -108,6 +111,7 @@ public static class Helpers
             {
                 FirstName = "user5",
                 Surname = "user55",
+                UserName = "user5@op.pl",
                 Email = "user5@op.pl",
                 EmailConfirmed = true,
             };
@@ -149,11 +153,11 @@ public static class Helpers
             await userManager.CreateAsync(user4, "Password123!");
             await userManager.CreateAsync(user5, "Password123!");
 
-            context.Addresses.Add(address1);
-            context.Addresses.Add(address2);
-            context.Addresses.Add(address3);
-            context.Addresses.Add(address4);
-            context.Addresses.Add(address5);
+            // context.Addresses.Add(address1);
+            // context.Addresses.Add(address2);
+            // context.Addresses.Add(address3);
+            // context.Addresses.Add(address4);
+            // context.Addresses.Add(address5);
 
             await context.SaveChangesAsync();
         }

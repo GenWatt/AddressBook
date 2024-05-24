@@ -97,7 +97,11 @@ namespace AddressBook.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            Console.WriteLine(returnUrl);
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/Identity/Account/Logout")
+            {
+                returnUrl = Url.Content("~/");
+            }
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

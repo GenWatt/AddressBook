@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using AddressBook.Data;
 using AddressBook.Helpers;
 using AddressBook.Models;
@@ -26,6 +27,15 @@ builder.Services.AddDefaultIdentity<UserModel>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddServices();
 builder.Services.AddRazorPages();
+// Add RateLimiter
+builder.Services.AddRateLimiter(_ =>
+{
+    _.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    _.AddPolicy("fixed", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+       partitionKey: httpContext.Connection.RemoteIpAddress.ToString(),
+       factory: partition => new FixedWindowRateLimiterOptions { PermitLimit = 2, Window = TimeSpan.FromSeconds(10) }));
+});
+
 
 var app = builder.Build();
 
@@ -42,6 +52,7 @@ else
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -49,6 +60,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapControllerRoute(
     name: "default",

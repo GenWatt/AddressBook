@@ -4,5 +4,7 @@ namespace AddressBook.Repository.UserRepository;
 
 public interface IUserRepository : IRepository<UserModel>
 {
-    Task<UserModel?> GetByEmail(string email);
+    // Returns all addresses of a user
+    Task<IEnumerable<UserModel>> GetAllAddressesByUserId(string userId);
+    Task<UserModel?> GetById(string userId);
 }

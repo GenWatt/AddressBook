@@ -19,4 +19,5 @@ public class FilterDTM
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 4;
     public FilterBy FilterBy { get; set; } = FilterBy.FirstName;
+    public string UserId { get; set; } = string.Empty;
 }

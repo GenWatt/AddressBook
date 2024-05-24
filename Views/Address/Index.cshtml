@@ -1,5 +1,5 @@
 ﻿@using AddressBook.Models
-@model IEnumerable<AddressModel>
+@model UserModel
 
 @{
     ViewData["Title"] = "Address Book";
@@ -12,10 +12,11 @@
 <a class="btn btn-primary" asp-action="AddAddress" asp-controller="Address">Add Address</a>
 
 <section>
-    @if (Model.Any())
+    @if (Model.Addresses.Count > 0)
     {
-        <partial name="_AddressTablePartial" model="@Model" />
-    } else
+        <partial name="_AddressTablePartial" model="@Model.Addresses" />
+    }
+    else
     {
         <p>No addresses found.</p>
     }

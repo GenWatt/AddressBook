@@ -25,6 +25,14 @@ public class UserRepository : Repository<UserModel>, IUserRepository
         return query;
     }
 
+    private async Task<IQueryable<UserModel>> ApplayExludeIds(IQueryable<UserModel> query, FilterDTM filter)
+    {
+        var currentUser = await GetById(filter.UserId);
+        var excludeUserIds = currentUser?.Users.Select(user => user.Id).ToList();
+        return query.Where(user => excludeUserIds == null || !excludeUserIds.Contains(user.Id));
+    }
+
+
     public async Task<int> CountByFilter(FilterDTM filter)
     {
         var query = _context.Users.AsQueryable();
@@ -33,6 +41,8 @@ public class UserRepository : Repository<UserModel>, IUserRepository
         {
             query = ApplyFilter(query, filter);
         }
+
+        query = await ApplayExludeIds(query, filter);
 
         return await query.CountAsync();
     }
@@ -44,17 +54,15 @@ public class UserRepository : Repository<UserModel>, IUserRepository
             .Include(user => user.Address)
             .AsQueryable();
 
-        var currentUser = await GetById(filter.UserId);
-        var excludeUserIds = currentUser?.Users.Select(user => user.Id).ToList();
-
         if (!string.IsNullOrEmpty(filter.Search))
         {
             query = ApplyFilter(query, filter);
         }
 
+        query = await ApplayExludeIds(query, filter);
+
         return await query.Skip((filter.Page - 1) * filter.PageSize)
             .Take(filter.PageSize)
-            .Where(user => excludeUserIds == null || !excludeUserIds.Contains(user.Id))
             .ToListAsync();
     }
 

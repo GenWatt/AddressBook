@@ -1,0 +1,45 @@
+@using AddressBook.DataTransferModels
+@model PaginationDTM
+
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+
+    if (totalPages <= 1)
+    {
+        return;
+    }
+
+    var filterStringQuery = "";
+    var page = string.IsNullOrEmpty(Model.FilterPrefix) ? "Page" : $"{Model.FilterPrefix}.Page";
+
+    if (Model.Filters != null)
+    {
+        var properties = Model.Filters.GetType().GetProperties();
+
+        foreach (var property in properties)
+        {
+            if (property.Name == "Page")
+            {
+                continue;
+            }
+
+            var value = property.GetValue(Model.Filters, null);
+            if (value != null)
+            {
+                // Ensure correct property name in the query string
+                filterStringQuery += $"&{Model.FilterPrefix}.{property.Name}={value}";
+            }
+        }
+    }
+}
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(Model.Page == i ? "active" : "")">
+                <a class="page-link" href="@($"?{page}={i}{filterStringQuery}")">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

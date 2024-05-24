@@ -1,6 +1,17 @@
 @using AddressBook.DataTransferModels
 @model AddressDTM
 
+@{
+    var paginationDTM = new PaginationDTM
+            {
+                Page = Model.Filter.Page,
+                PageSize = Model.Filter.PageSize,
+                TotalCount = Model.TotalCount,
+                Filters = Model.Filter,
+                FilterPrefix = "Filter"
+            };
+}
+
 <section class="mb-3">
     <h3>Filters</h3>
 
@@ -79,4 +90,6 @@ else
             </li>
         }
     </ul>
+
+    <partial name="_Pagination" model="@paginationDTM" />
 }

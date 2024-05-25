@@ -1,9 +1,7 @@
-using System.Security.Claims;
 using AddressBook.DataTransferModels;
-using AddressBook.Models;
-using AddressBook.Services.FileService;
 using AddressBook.Services.UserService;
-using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -12,104 +10,82 @@ namespace AddressBook.Controllers;
 
 [EnableRateLimiting("fixed")]
 [Authorize]
-public class UserController : Controller
+public class UserController : BaseController
 {
     private readonly IUserService _userService;
-    private readonly IMapper _mapper;
-    private readonly IFileService _fileService;
 
-    public UserController(IUserService userService, IMapper mapper, IFileService fileService)
+    private readonly IValidator<UserDataPostDTM> _validator;
+
+    public UserController(IUserService userService, IValidator<UserDataPostDTM> validator)
     {
         _userService = userService;
-        _mapper = mapper;
-        _fileService = fileService;
+        _validator = validator;
     }
 
     public async Task<IActionResult> AddAddress(string userToAddId)
     {
-        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId == null) return Unauthorized();
 
-        if (currentUserId == null)
-        {
-            return Unauthorized();
-        }
+        var result = await _userService.AddAddressToUser(currentUserId, userToAddId);
+        if (!result.IsSuccess) return HandleError(result);
 
-        await _userService.AddAddressToUser(currentUserId, userToAddId);
-        return RedirectToAction("Index", "Address");
+        return HandleResult(result, () => RedirectToAction("Index", "Address"));
     }
 
     public async Task<IActionResult> DeleteAddress(string userToDeleteId)
     {
-        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId == null) return Unauthorized();
 
-        if (currentUserId == null)
-        {
-            return Unauthorized();
-        }
 
-        await _userService.DeleteAddressFormUser(currentUserId, userToDeleteId);
-        return RedirectToAction("Index", "Address");
+        var result = await _userService.DeleteAddressFormUser(currentUserId, userToDeleteId);
+        if (!result.IsSuccess) return HandleError(result);
+
+        return HandleResult(result, () => RedirectToAction("Index", "Address"));
     }
 
     public async Task<IActionResult> Details(string userId)
     {
-        var user = await _userService.GetById(userId);
+        var result = await _userService.GetById(userId);
+        if (!result.IsSuccess || result.Data == null) return HandleError(result);
 
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        return View(user);
+        return HandleResult(result, () => View(result.Data));
     }
 
     public async Task<IActionResult> Update()
     {
-        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var currentUserId = GetCurrentUserId();
+        if (string.IsNullOrEmpty(currentUserId)) return Unauthorized();
 
-        if (currentUserId == null)
-        {
-            return Unauthorized();
-        }
+        var result = await _userService.GetById(currentUserId);
+        if (!result.IsSuccess || result.Data == null) return Unauthorized();
 
-        var user = await _userService.GetById(currentUserId);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var userDataDTM = _mapper.Map<UserDataDTM>(user);
-        var countryData = await _fileService.GetCountryData();
-
-        userDataDTM.SelectData.CountryData = countryData;
-        userDataDTM.CountryData = countryData;
-
-        return View(userDataDTM);
+        var userDataDTM = await _userService.PrepareUserDataDTM(result.Data);
+        return HandleResult(result, () => View(userDataDTM));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Update(UserDataPostDTM userData)
     {
-        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId == null) return Unauthorized();
 
-        if (currentUserId == null)
+        var validationResult = _validator.Validate(userData);
+
+        if (!validationResult.IsValid)
         {
-            return Unauthorized();
-        }
-
-        if (!ModelState.IsValid)
-        {
-            var countryData = await _fileService.GetCountryData();
-
-            return View();
+            var userDataDTM = await _userService.PrepareUserDataDTM(userData);
+            validationResult.AddToModelState(ModelState, null);
+            return View(userDataDTM);
         }
 
         userData.Id = currentUserId;
+        var result = await _userService.Update(userData);
 
-        await _userService.Update(userData);
+        if (!result.IsSuccess) return HandleError(result);
 
-        return RedirectToAction("Index", "Address");
+        return HandleResult(result, () => RedirectToAction("Index", "Address"));
     }
 }

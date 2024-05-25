@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 
-
 namespace AddressBook.DataTransferModels;
 
 public class CountryData

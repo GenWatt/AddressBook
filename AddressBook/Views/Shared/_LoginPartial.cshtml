@@ -7,7 +7,7 @@
     {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="User" asp-action="Update" title="Update">
-                Hello <strong class="text-primary">@User.Identity?.Name!</strong>
+                Hello <strong id="currentUserEmail" class="text-primary">@User.Identity?.Name!</strong>
             </a>
         </li>
         <li class="nav-item">

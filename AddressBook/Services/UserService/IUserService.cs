@@ -1,3 +1,4 @@
+using AddressBook.Common;
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
 
@@ -5,13 +6,14 @@ namespace AddressBook.Services.UserService;
 
 public interface IUserService
 {
-    Task<UserModel?> GetById(string userId);
-    Task<IEnumerable<UserModel>> GetAllAddressesByUserId(string userId);
-    Task<IEnumerable<UserModel>> GetAllByFilter(FilterDTM filterBy);
+    Task<Result> AddAddressToUser(string userId, string userToAddId);
 
-    Task AddAddressToUser(string userId, string userToAddId);
-    Task<int> CountByFilter(FilterDTM filter);
+    Task<Result<IEnumerable<UserModel>>> GetAllAddressesByUserId(string userId);
+    Task<Result<UserModel?>> GetById(string userId);
+    Task<Result<int>> CountByFilter(FilterDTM filter);
+    Task<Result<IEnumerable<UserModel>>> GetAllByFilter(FilterDTM filterBy);
 
-    Task DeleteAddressFormUser(string userId, string userToDeleteId);
-    Task Update(UserDataPostDTM user);
+    Task<Result> DeleteAddressFormUser(string userId, string userToDeleteId);
+    Task<Result> Update(UserDataPostDTM userData);
+    Task<UserDataDTM> PrepareUserDataDTM<T>(T userData);
 }

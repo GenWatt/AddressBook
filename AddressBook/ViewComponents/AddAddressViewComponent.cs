@@ -17,10 +17,10 @@ public class AddAddressViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync(AddressDTM address)
     {
         var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-        Console.WriteLine(userId);
+
         address.Filter.UserId = userId;
         var addresses = await _userService.GetAllByFilter(address.Filter);
-        address.UsersSuggestions = addresses;
+        address.UsersSuggestions = addresses.Data;
 
         return View(address);
     }

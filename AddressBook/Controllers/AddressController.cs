@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Diagnostics;
-using System.Security.Claims;
 
 namespace AddressBook.Controllers;
 
 [EnableRateLimiting("fixed")]
 [Authorize]
-public class AddressController : Controller
+public class AddressController : BaseController
 {
     private readonly IUserService _userService;
 
@@ -22,35 +21,25 @@ public class AddressController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
+        var result = await _userService.GetById(userId);
 
-        var user = await _userService.GetById(userId);
+        if (!result.IsSuccess) return Unauthorized();
 
-        if (user == null)
-        {
-            return Unauthorized();
-        }
-
-        return View(user);
+        return HandleResult(result, () => View(result.Data));
     }
 
     public async Task<IActionResult> AddAddress(FilterDTM filter)
     {
-        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (currentUserId == null)
-        {
-            return Unauthorized();
-        }
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId == null) return Unauthorized();
 
         filter.UserId = currentUserId;
         var totalCount = await _userService.CountByFilter(filter);
-        return View(new AddressDTM { Filter = filter, TotalCount = totalCount });
+
+        return View(new AddressDTM { Filter = filter, TotalCount = totalCount.Data });
     }
 
     public IActionResult Privacy()

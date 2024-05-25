@@ -5,12 +5,12 @@
     ViewData["Title"] = $"Update {Model.FirstName} {Model.Surname}";
 }
 
-<h1>@ViewData["Title"]</h1>
+@ViewBag.ErrorMessage
+
+<h1>Update <strong class="text-primary">@Model.FirstName @Model.Surname</strong></h1>
 
 <form asp-controller="User" asp-action="Update" method="post">
     @Html.AntiForgeryToken()
-
-    @* <input type="hidden" asp-for="Id" /> *@
 
     <partial name="_UserDataPartial" model="@Model" />
 

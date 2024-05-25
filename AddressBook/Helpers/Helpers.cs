@@ -1,5 +1,6 @@
-﻿using AddressBook.Data;
-using AddressBook.DataTransferModels;
+﻿using System.Reflection;
+using AddressBook.Common;
+using AddressBook.Data;
 using AddressBook.Models;
 using AddressBook.Repository.AddressRepository;
 using AddressBook.Repository.UserRepository;
@@ -7,39 +8,11 @@ using AddressBook.Services.AddressService;
 using AddressBook.Services.FileService;
 using AddressBook.Services.UserService;
 using AddressBook.UOW;
-using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AddressBook.Helpers;
-
-public class CustomProfile : Profile
-{
-    public CustomProfile()
-    {
-        CreateMap<UserModel, UserDataDTM>()
-            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City))
-            .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street))
-            .ForMember(dest => dest.Zip, opt => opt.MapFrom(src => src.Address.Zip))
-            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address.Country))
-            .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.Address.CountryCode))
-            .ForMember(dest => dest.CountryFlagUrl, opt => opt.MapFrom(src => src.Address.CountryFlagUrl))
-            .ForMember(dest => dest.PhoneNumberCode, opt => opt.MapFrom(src => src.PhoneNumberCode))
-            .ReverseMap();
-
-        CreateMap<UserModel, UserDataPostDTM>()
-            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City))
-            .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street))
-            .ForMember(dest => dest.Zip, opt => opt.MapFrom(src => src.Address.Zip))
-            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address.Country))
-            .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.Address.CountryCode))
-            .ForMember(dest => dest.CountryFlagUrl, opt => opt.MapFrom(src => src.Address.CountryFlagUrl))
-            .ForMember(dest => dest.PhoneNumberCode, opt => opt.MapFrom(src => src.PhoneNumberCode))
-            .ReverseMap();
-
-        CreateMap<UserModel, UserModel>();
-    }
-}
 
 public static class Helpers
 {
@@ -58,6 +31,9 @@ public static class Helpers
 
         // Automapper
         services.AddAutoMapper(typeof(CustomProfile));
+
+        // validators
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         return services;
     }
 
@@ -186,12 +162,6 @@ public static class Helpers
             await userManager.CreateAsync(user3, "Password123!");
             await userManager.CreateAsync(user4, "Password123!");
             await userManager.CreateAsync(user5, "Password123!");
-
-            // context.Addresses.Add(address1);
-            // context.Addresses.Add(address2);
-            // context.Addresses.Add(address3);
-            // context.Addresses.Add(address4);
-            // context.Addresses.Add(address5);
 
             await context.SaveChangesAsync();
         }

@@ -44,7 +44,7 @@ class CountrySelector {
         const { userCountryCodeUppercase, userCountryData } = this.getCountryData();
 
         if (userCountryData) {
-            $('#PhoneCodeSelect').val(userCountryCodeUppercase);
+            $('#PhoneCodeSelect').val(`${userCountryCodeUppercase} ${userCountryData.phone[0]}`);
         }
     }
 

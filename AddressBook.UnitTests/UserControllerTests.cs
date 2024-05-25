@@ -1,11 +1,10 @@
 using System.Security.Claims;
+using AddressBook.Common;
 using AddressBook.Controllers;
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
-using AddressBook.Services.FileService;
 using AddressBook.Services.UserService;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -18,21 +17,15 @@ public class UserControllerTests
     {
         // Arrange
         var userServiceMock = new Mock<IUserService>();
-        var fileServiceMock = new Mock<IFileService>();
-        var autoMapperMock = new Mock<IMapper>();
+        var validatorMock = new Mock<IValidator<UserDataPostDTM>>();
+        UserServiceMockHelper.SetupAddAddressToUser(userServiceMock);
 
-        userServiceMock.Setup(x => x.AddAddressToUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-
-        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
         var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
-              new Claim(ClaimTypes.NameIdentifier, "currentUserId")
+            new Claim(ClaimTypes.NameIdentifier, "currentUserId")
         }, "mock"));
 
-        controller.ControllerContext = new ControllerContext()
-        {
-            HttpContext = new DefaultHttpContext() { User = userClaims }
-        };
+        var controller = UserControllerTestHelper.CreateUserControllerWithUserContext(userServiceMock, userClaims);
 
         // Act
         var result = await controller.AddAddress("userToAddId") as RedirectToActionResult;
@@ -49,21 +42,13 @@ public class UserControllerTests
     {
         // Arrange
         var userServiceMock = new Mock<IUserService>();
-        var fileServiceMock = new Mock<IFileService>();
-        var autoMapperMock = new Mock<IMapper>();
-
-        userServiceMock.Setup(x => x.AddAddressToUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-
-        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
+        UserServiceMockHelper.SetupDeleteAddressFormUser(userServiceMock);
         var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
-                new Claim(ClaimTypes.NameIdentifier, "currentUserId")
-            }, "mock"));
+            new Claim(ClaimTypes.NameIdentifier, "currentUserId")
+        }, "mock"));
 
-        controller.ControllerContext = new ControllerContext()
-        {
-            HttpContext = new DefaultHttpContext() { User = userClaims }
-        };
+        var controller = UserControllerTestHelper.CreateUserControllerWithUserContext(userServiceMock, userClaims);
 
         // Act
         var result = await controller.DeleteAddress("userToDeleteId") as RedirectToActionResult;
@@ -80,11 +65,11 @@ public class UserControllerTests
     {
         // Arrange
         var userServiceMock = new Mock<IUserService>();
-        userServiceMock.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(new UserModel { Id = "userId", FirstName = "John" });
+        var validatorMock = new Mock<IValidator<UserDataPostDTM>>();
+        var userModel = new UserModel { Id = "userId", FirstName = "John" };
+        UserServiceMockHelper.SetupGetById(userServiceMock, userModel);
 
-        var fileServiceMock = new Mock<IFileService>();
-        var autoMapperMock = new Mock<IMapper>();
-        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
+        var controller = new UserController(userServiceMock.Object, validatorMock.Object);
 
         // Act
         var result = await controller.Details("userId") as ViewResult;
@@ -98,21 +83,51 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task Details_WhenUserDoesNotExist_ShouldReturnNotFound()
+    public async Task Details_WhenUserDoesNotExist_ShouldReturnOtherErrorView()
     {
         // Arrange
         var userServiceMock = new Mock<IUserService>();
-        userServiceMock.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync((UserModel)null);
+        var validatorMock = new Mock<IValidator<UserDataPostDTM>>();
+        UserServiceMockHelper.SetupGetById(userServiceMock, null);
 
-        var fileServiceMock = new Mock<IFileService>();
-        var autoMapperMock = new Mock<IMapper>();
-        var controller = new UserController(userServiceMock.Object, autoMapperMock.Object, fileServiceMock.Object);
+        var controller = new UserController(userServiceMock.Object, validatorMock.Object);
 
         // Act
-        var result = await controller.Details("nonExistingUserId") as NotFoundResult;
+        var result = await controller.Details("nonExistingUserId") as ViewResult;
 
         // Assert
         Assert.NotNull(result);
+        Assert.Equal("OtherError", result.ViewName);
+        Assert.NotNull(result.ViewData["ErrorMessage"]);
+    }
+
+    [Fact]
+    public async Task Update_WhenUserIsAuthenticated_ShouldReturnViewWithUserDataDTM()
+    {
+        // Arrange
+        var userServiceMock = new Mock<IUserService>();
+        var userModel = new UserModel { Id = "userId", FirstName = "John" };
+        userServiceMock.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(Result<UserModel?>.Success("Success", userModel));
+
+        var userDataDTM = new UserDataDTM { Id = "userId", FirstName = "John" };
+        userServiceMock.Setup(x => x.PrepareUserDataDTM(userModel)).ReturnsAsync(userDataDTM);
+
+        var userClaims = new ClaimsPrincipal(new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, "currentUserId")
+        }, "mock"));
+
+        var controller = UserControllerTestHelper.CreateUserControllerWithUserContext(userServiceMock, userClaims);
+
+        // Act
+        var result = await controller.Update() as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<UserDataDTM>(result.Model);
+        var model = result.Model as UserDataDTM;
+        Assert.Equal("userId", model.Id);
+        Assert.Equal("John", model.FirstName);
     }
 }
 

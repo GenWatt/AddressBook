@@ -34,6 +34,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<UserModel> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly string countryDataPath = "wwwroot/Json/CountryData.json";
 
         public RegisterModel(
             UserManager<UserModel> userManager,
@@ -136,7 +137,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
 
         private async Task GetCountryData()
         {
-            var jsonFile = await System.IO.File.ReadAllTextAsync("wwwroot/Json/CountryData.json");
+            var jsonFile = await System.IO.File.ReadAllTextAsync(countryDataPath);
             var countryData = JsonConvert.DeserializeObject<CountryDictionary>(jsonFile);
             UserData.CountryData = countryData;
             UserData.SelectData.CountryData = countryData;
@@ -144,7 +145,10 @@ namespace AddressBook.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/Identity/Account/Logout")
+            {
+                returnUrl = Url.Content("~/");
+            }
 
             if (ModelState.IsValid)
             {

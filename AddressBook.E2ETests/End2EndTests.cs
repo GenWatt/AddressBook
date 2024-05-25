@@ -1,13 +1,10 @@
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
 namespace AddressBook.E2ETests;
 
-public class SeleniumTests : IDisposable
+public class SeleniumTests : End2EndBase, IDisposable
 {
-    private readonly ChromeDriver driver;
-    private readonly string screenshotPath = "../../screenshots/";
     private const string BaseUrl = "http://localhost:5188/";
     private const string RegisterUrl = BaseUrl + "Identity/Account/Register";
     private const string EmailId = "Input_Email";
@@ -27,20 +24,7 @@ public class SeleniumTests : IDisposable
     private const string CountrySelectId = "countrySelect";
     private const string PhoneCodeSelectId = "PhoneCodeSelect";
 
-    public SeleniumTests()
-    {
-        var options = new ChromeOptions();
-        options.AddArgument("--start-maximized");
-        driver = new ChromeDriver(options);
-    }
-
-    private void MakeScreenshot(string fileName)
-    {
-        Directory.CreateDirectory(screenshotPath);
-        var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
-        screenshot.SaveAsFile(screenshotPath + fileName + ".png");
-    }
-
+    public SeleniumTests() : base() { }
     private void Login()
     {
         // Arrange
@@ -158,10 +142,5 @@ public class SeleniumTests : IDisposable
     public void Login_ShouldNavigateToHomePageAndHaveUserEmail()
     {
         Login();
-    }
-
-    public void Dispose()
-    {
-        driver.Quit();
     }
 }

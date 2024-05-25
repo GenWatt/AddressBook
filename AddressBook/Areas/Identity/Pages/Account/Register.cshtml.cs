@@ -106,6 +106,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
             public string FirstName { get; set; }
             [Required]
             public string Surname { get; set; }
+
             [Required]
             [DataType(DataType.PhoneNumber)]
             [Display(Name = "Phone Number")]

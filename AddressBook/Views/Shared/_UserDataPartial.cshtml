@@ -60,7 +60,7 @@
             {
                 @if (string.IsNullOrEmpty(country.Value.Phone[0]) || country.Value.Phone[0].Length == 1)
                     continue;
-                <option value="@country.Key  @country.Value.Phone[0]">
+                <option value="@country.Key @country.Value.Phone[0]">
                     @country.Key @country.Value.Phone[0]
                 </option>
             }

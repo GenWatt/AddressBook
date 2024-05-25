@@ -15,22 +15,22 @@ public class LogMiddleware
     {
         var requestLog = await FormatRequest(context.Request);
         _logger.LogInformation(requestLog);
+        await _next(context);
+        // var originalBodyStream = context.Response.Body;
+        // using (var responseBody = new MemoryStream())
+        // {
+        //     context.Response.Body = responseBody;
 
-        var originalBodyStream = context.Response.Body;
-        using (var responseBody = new MemoryStream())
-        {
-            context.Response.Body = responseBody;
+        //     // Call the next middleware in the pipeline
+        //     await _next(context);
 
-            // Call the next middleware in the pipeline
-            await _next(context);
+        //     var responseLog = await FormatResponse(context.Response);
+        //     _logger.LogInformation(responseLog);
 
-            var responseLog = await FormatResponse(context.Response);
-            _logger.LogInformation(responseLog);
-
-            // Copy the response body to the original stream
-            responseBody.Seek(0, SeekOrigin.Begin);
-            await responseBody.CopyToAsync(originalBodyStream);
-        }
+        //     // Copy the response body to the original stream
+        //     responseBody.Seek(0, SeekOrigin.Begin);
+        //     await responseBody.CopyToAsync(originalBodyStream);
+        // }
     }
 
     private async Task<string> FormatRequest(HttpRequest request)

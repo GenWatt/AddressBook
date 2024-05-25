@@ -4,7 +4,6 @@ using AddressBook.Data;
 using AddressBook.Models;
 using AddressBook.Repository.AddressRepository;
 using AddressBook.Repository.UserRepository;
-using AddressBook.Services.AddressService;
 using AddressBook.Services.FileService;
 using AddressBook.Services.UserService;
 using AddressBook.UOW;
@@ -25,7 +24,6 @@ public static class Helpers
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Services
-        services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IFileService, FileService>();
 

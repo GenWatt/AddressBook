@@ -1,5 +1,4 @@
 ﻿using AddressBook.Data;
-using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using Microsoft.EntityFrameworkCore;
 

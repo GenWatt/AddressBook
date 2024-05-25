@@ -3,6 +3,7 @@ using AddressBook.Data;
 using AddressBook.Helpers;
 using AddressBook.Middlewares;
 using AddressBook.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,12 +49,12 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Address/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-// app.UseMiddleware<LogMiddleware>();
+app.UseMiddleware<LogMiddleware>();
 
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();
@@ -64,6 +65,25 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
+
+// Global error handlier
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "text/html";
+
+        var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
+        if (errorFeature != null)
+        {
+            var exception = errorFeature.Error;
+            Console.WriteLine(exception.Message);
+        }
+
+        await context.Response.WriteAsync("There was an error. Please try again later.");
+    });
+});
 
 app.MapControllerRoute(
     name: "default",

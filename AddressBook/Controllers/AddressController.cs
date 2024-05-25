@@ -21,6 +21,7 @@ public class AddressController : BaseController
 
     public async Task<IActionResult> Index()
     {
+        ;
         var userId = GetCurrentUserId();
         if (userId == null) return Unauthorized();
 

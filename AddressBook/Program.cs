@@ -29,7 +29,7 @@ builder.Services.AddDefaultIdentity<UserModel>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddServices();
 builder.Services.AddRazorPages();
-// Add RateLimiter
+// Add RateLimiter based in address IP
 builder.Services.AddRateLimiter(_ =>
 {
     _.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -54,7 +54,7 @@ else
     app.UseHsts();
 }
 
-// app.UseMiddleware<LogMiddleware>();
+app.UseMiddleware<LogMiddleware>();
 
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();

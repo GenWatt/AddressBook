@@ -13,7 +13,7 @@ With this app you will be able to register user, add other users to your address
 - Microsoft Identity
 
 # Run
-To run app you need install all dependecies and run command `dotnet run` or use Docker. 
+To run app you need install all dependencies and run command `dotnet run` or use Docker. 
 
 # Overview
 

@@ -18,7 +18,7 @@ To run app you need install all dependencies and run command `dotnet run` or use
 # Overview
 
 ## Register page
-All inputs are required. Country, Country code and phone code data are from [Json file](./AddressBook/wwwroot/Json/CountryData.json), also Postal code need to be in valid format based on selected country standards.
+All inputs are required. Country, Country code and phone code data are from [Json file](./AddressBook/wwwroot/Json/CountryData.json), also Postal code need to be in valid format based on selected country standards. Country and Phone code is selected automatically based on your language settings in browser.
 ![Register Page](./readme/register.png)
 
 ## Login page

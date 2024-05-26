@@ -3,6 +3,7 @@
 With this app you will be able to register user, add other users to your address book or delete them. You can also edit your user data. To use you need to be login. App is using in memory database with preseeded data.
 
 # Tech:
+- .Net 8
 - ASP MVC
 - Entity Framework
 - XUnit

@@ -3,7 +3,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace AddressBook.E2ETests;
 
-public class SeleniumTests : End2EndBase, IDisposable
+public class End2EndTests : End2EndBase, IDisposable
 {
     private const string BaseUrl = "http://localhost:5188/";
     private const string RegisterUrl = BaseUrl + "Identity/Account/Register";
@@ -18,13 +18,15 @@ public class SeleniumTests : End2EndBase, IDisposable
     private const string PhoneNumberId = "Input_PhoneNumber";
     private const string RegisterSubmitId = "registerSubmit";
     private const string SurnameErrorId = "Input_Surname-error";
+    private const string ZipCodeErrorId = "Input_Zip-error";
     private const string SurnameErrorMessage = "The Surname field is required.";
+    private const string ZipCodeErrorMessage = "Invalid postal code for United States.";
     private const string LoginId = "login-submit";
     private const string UserEmailId = "currentUserEmail";
     private const string CountrySelectId = "countrySelect";
     private const string PhoneCodeSelectId = "PhoneCodeSelect";
 
-    public SeleniumTests() : base() { }
+    public End2EndTests() : base() { }
     private void Login()
     {
         // Arrange
@@ -115,6 +117,23 @@ public class SeleniumTests : End2EndBase, IDisposable
         var surnameErrorLabel = wait.Until(d => d.FindElement(By.Id(SurnameErrorId)));
         MakeScreenshot("email-register-error");
         Assert.Equal(SurnameErrorMessage, surnameErrorLabel.Text);
+    }
+
+    [Theory]
+    [InlineData("John", "LOl", "John@op.pl", "Main Street", "New York", "12", "US +1", "123456789", "US", "123", "123")]
+    [InlineData("Jane", "LOl", "Jane@op.pl", "Second Street", "Los Angeles", "677", "US +1", "987654321", "US", "456", "456")]
+    public void Register_ShouldShowZipCodeBeInvalid(string firstNameValue, string surnameValue, string emailValue, string streetValue, string cityValue, string zipCodeValue, string phoneCodeValue, string phoneNumberValue, string countryCodeValue, string passwordValue, string confirmPasswordValue)
+    {
+        driver.Navigate().GoToUrl($"{RegisterUrl}");
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+        RegisterArrangeAndAct(firstNameValue, surnameValue, emailValue, streetValue, cityValue, zipCodeValue, phoneCodeValue, phoneNumberValue, countryCodeValue, passwordValue, confirmPasswordValue);
+        // Assert
+        Assert.Equal($"{RegisterUrl}", driver.Url);
+        // check if there is strong element with user email
+        var surnameErrorLabel = wait.Until(d => d.FindElement(By.CssSelector(".field-validation-error")));
+        MakeScreenshot("email-register-error-zip");
+        Assert.Equal(ZipCodeErrorMessage, surnameErrorLabel.Text);
     }
 
     [Fact]

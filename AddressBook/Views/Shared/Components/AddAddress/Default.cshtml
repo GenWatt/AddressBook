@@ -16,7 +16,6 @@
     <h3>Filters</h3>
 
     <form method="get">
-        @* Radio filter too choose FirstName, Surname, Email, PhoneNumber, City *@
         <div class="d-flex gap-2 flex-wrap">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="Filter.FilterBy" value="firstname" id="firstname"
@@ -70,28 +69,13 @@
     </form>
 </section>
 
-
-
 @if (!Model.UsersSuggestions.Any())
 {
     <h4 class="text-center">No users found.</h4>
 }
 else
 {
-    <ul class="address-grid mb-3 p-0">
-        @foreach (var user in Model.UsersSuggestions)
-        {
-            <li class="card">
-                <div class="card-body">
-                    <h5 class="card-title">@user.FirstName @user.Surname</h5>
-                    <p class="card-text">@user.Address.Street, @user.Address.City, @user.Address.Country</p>
-                    <a asp-controller="User" asp-action="AddAddress" asp-route-userToAddId="@user.Id" class="btn btn-primary">
-                        Add
-                    </a>
-                </div>
-            </li>
-        }
-    </ul>
-
+    <partial name="_Pagination" model="@paginationDTM" />
+    <partial name="_AddressListPartial" model="@Model.UsersSuggestions" />
     <partial name="_Pagination" model="@paginationDTM" />
 }

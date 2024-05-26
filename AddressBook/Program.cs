@@ -54,7 +54,7 @@ else
     app.UseHsts();
 }
 
-app.UseMiddleware<LogMiddleware>();
+// app.UseMiddleware<LogMiddleware>();
 
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();

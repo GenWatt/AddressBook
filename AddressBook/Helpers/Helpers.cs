@@ -51,6 +51,8 @@ public static class Helpers
                 Surname = "user11",
                 UserName = "user1@op.pl",
                 Email = "user1@op.pl",
+                PhoneNumber = "123456789",
+                PhoneNumberCode = "PL +48"
             };
 
             var user2 = new UserModel
@@ -59,6 +61,8 @@ public static class Helpers
                 Surname = "user22",
                 UserName = "user2@op.pl",
                 Email = "user2@op.pl",
+                PhoneNumber = "987654321",
+                PhoneNumberCode = "CA +1"
             };
 
             var user3 = new UserModel
@@ -67,6 +71,8 @@ public static class Helpers
                 Surname = "user33",
                 UserName = "user3@op.pl",
                 Email = "user3@op.pl",
+                PhoneNumber = "123123123",
+                PhoneNumberCode = "PL +48"
             };
 
             var address1 = new AddressModel
@@ -78,7 +84,7 @@ public static class Helpers
                 CountryCode = "US",
                 CountryFlagUrl = "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/US.svg",
                 CreatedAt = DateTime.Now,
-                User = user1
+                User = user1,
             };
 
             var address2 = new AddressModel
@@ -113,6 +119,8 @@ public static class Helpers
                 UserName = "user4@op.pl",
                 Email = "user4@op.pl",
                 EmailConfirmed = true,
+                PhoneNumber = "123123123",
+                PhoneNumberCode = "PL +48"
             };
 
             var user5 = new UserModel
@@ -122,6 +130,8 @@ public static class Helpers
                 UserName = "user5@op.pl",
                 Email = "user5@op.pl",
                 EmailConfirmed = true,
+                PhoneNumber = "321321321",
+                PhoneNumberCode = "US +1"
             };
 
             var address4 = new AddressModel

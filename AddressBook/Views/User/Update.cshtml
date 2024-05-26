@@ -23,7 +23,7 @@
     <script>
         $(document).ready(function () {
             const allCountryCodes = @Html.Raw(Json.Serialize(Model.CountryData));
-            const countrySelector = new CountrySelector(allCountryCodes, false);
+            const countrySelector = new CountrySelector(allCountryCodes, false, "CountryFlagUrl", "Country");
         });
     </script>
 }

@@ -119,7 +119,8 @@
     <script>
         $(document).ready(function () {
             const allCountryCodes = @Html.Raw(Json.Serialize(Model.UserData.CountryData));
-            const countrySelector = new CountrySelector(allCountryCodes);
+            const fisrtLoad = @Html.Raw(Json.Serialize(Model.FirstLoad));
+            const countrySelector = new CountrySelector(allCountryCodes, fisrtLoad);
         });
     </script>
 }

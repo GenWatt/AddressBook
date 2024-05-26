@@ -1,9 +1,9 @@
 class CountrySelector {
-    constructor(allCountryCodes, shouldInitialize = true) {
+    constructor(allCountryCodes, shouldInitialize = true, countryFlagInputId = 'Input_CountryFlagUrl', countryInputId = 'Input_Country') {
         this.allCountryCodes = allCountryCodes;
         this.shouldInitialize = shouldInitialize;
-        this.countryFlagInputId = shouldInitialize ? 'Input_CountryFlagUrl' : 'CountryFlagUrl';
-        this.countryInputId = shouldInitialize ? 'Input_Country' : 'Country';
+        this.countryFlagInputId = countryFlagInputId;
+        this.countryInputId = countryInputId;
         this.initialize();
     }
 
@@ -21,7 +21,7 @@ class CountrySelector {
     handleChange = () => {
         const countryCode = $('#countrySelect').val();
         const countryData = this.allCountryCodes[countryCode];
-        console.log(countryData);
+
         if (countryData) {
             this.updateCountryData(countryData.name, countryData.image);
         }

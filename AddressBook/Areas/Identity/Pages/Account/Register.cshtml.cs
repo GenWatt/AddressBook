@@ -8,8 +8,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AddressBook.Common;
 using AddressBook.DataTransferModels;
 using AddressBook.Models;
 using Humanizer;
@@ -35,6 +37,7 @@ namespace AddressBook.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly string countryDataPath = "wwwroot/Json/CountryData.json";
+        private readonly string postalCodeDataPath = "wwwroot/Json/PostalCodeRules.json";
 
         public RegisterModel(
             UserManager<UserModel> userManager,
@@ -71,6 +74,8 @@ namespace AddressBook.Areas.Identity.Pages.Account
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public UserDataDTM UserData { get; set; } = new();
+        public List<PostalCodeDataRules> PostalCodeDataRules { get; set; } = new();
+        public bool FirstLoad { get; set; } = true;
         public class InputModel
         {
             /// <summary>
@@ -144,11 +149,38 @@ namespace AddressBook.Areas.Identity.Pages.Account
             UserData.SelectData.CountryData = countryData;
         }
 
+        private async Task GetPostalCodeData()
+        {
+            var jsonFile = await System.IO.File.ReadAllTextAsync(postalCodeDataPath);
+            var postalCodeData = JsonConvert.DeserializeObject<List<PostalCodeDataRules>>(jsonFile);
+            PostalCodeDataRules = postalCodeData;
+        }
+
+        private bool IsValidPostalCode(string postalCode, string countryCode)
+        {
+            var postalCodeData = PostalCodeDataRules.FirstOrDefault(x => x.ISO == countryCode);
+
+            if (postalCodeData == null)
+            {
+                return false;
+            }
+
+            var regex = new Regex(postalCodeData.Regex);
+            return regex.IsMatch(postalCode);
+        }
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/Identity/Account/Logout")
             {
                 returnUrl = Url.Content("~/");
+            }
+
+            await GetPostalCodeData();
+
+            if (!IsValidPostalCode(Input.Zip, Input.CountryCode))
+            {
+                ModelState.AddModelError("Input.Zip", $"Invalid postal code for {Input.Country}.");
             }
 
             if (ModelState.IsValid)
@@ -198,6 +230,8 @@ namespace AddressBook.Areas.Identity.Pages.Account
             }
             // If we got this far, something failed, redisplay form
             await GetCountryData();
+
+            FirstLoad = false;
             return Page();
         }
 

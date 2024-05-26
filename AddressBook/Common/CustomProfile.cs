@@ -28,6 +28,9 @@ public class CustomProfile : Profile
             .ForMember(dest => dest.PhoneNumberCode, opt => opt.MapFrom(src => src.PhoneNumberCode))
             .ReverseMap();
 
+        CreateMap<UserDataPostDTM, UserDataDTM>()
+            .ReverseMap();
+
         CreateMap<UserModel, UserModel>();
     }
 }

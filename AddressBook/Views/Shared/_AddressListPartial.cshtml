@@ -1,0 +1,28 @@
+@using AddressBook.Models
+@model IEnumerable<UserModel>
+
+<ul class="address-grid mb-3 p-0">
+    @foreach (var user in Model)
+    {
+        <li class="card">
+            <div class="card-body">
+                <h5 class="card-title">@user.FirstName @user.Surname</h5>
+                <div class="mb-1">
+                    <div class="d-flex gap-1 flex-wrap">
+                        <p class="mb-1 badge bg-secondary">@user.Email</p>
+                        @if (!string.IsNullOrWhiteSpace(user.PhoneNumberCode))
+                        {
+                            <p class="mb-1 badge bg-secondary">@user.PhoneNumberCode.Split(" ")[1] @user.PhoneNumber</p>
+                        }
+                    </div>
+                    <p class="card-text mb-1">@user.Address.Street, @user.Address.City, @user.Address.Country</p>
+                    <img src="@user.Address.CountryFlagUrl" alt="Country flag" class="img-flag">
+                </div>
+
+                <a asp-controller="User" asp-action="AddAddress" asp-route-userToAddId="@user.Id" class="btn btn-primary">
+                    Add
+                </a>
+            </div>
+        </li>
+    }
+</ul>

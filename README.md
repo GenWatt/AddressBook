@@ -16,3 +16,4 @@ With this app you will be able to register user, add other users to your address
 ## Register page
 All inputs are required. Country, Country code and phone code data are from [Json file](./AddressBook/wwwroot/Json/CountryData.json)
 ![Register Page](./readme/register.png)
+
